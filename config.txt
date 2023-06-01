@@ -1,0 +1,15 @@
+sudo nano etc/mosquitto/mosquitto.conf
+
+
+listener 1883
+ 
+# Indica si se permite la conexión de cliente sin usuario y contraseña (true) o debe indicar usuario y contraseña (false)
+allow_anonymous true
+# Indica si almacenar los mensajes en la base de datos
+persistence true
+ 
+# Indica el directorio donde se almacenan los datos
+persistence_location /mosquitto/data/
+ 
+# Indica donde almacenar los logs de Mosquitto
+log_dest file /mosquitto/log/mosquitto.log

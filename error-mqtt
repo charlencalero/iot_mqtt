@@ -1,0 +1,15 @@
+/bin/python3 /home/charlen/Dropbox/COMPARTIR_LINUX/DATOS_LINUX/MQTT/api_mqqt.py
+Traceback (most recent call last):
+  File "/home/charlen/Dropbox/COMPARTIR_LINUX/DATOS_LINUX/MQTT/api_mqqt.py", line 48, in <module>
+    mqtt_client.connect(mqtt_broker, mqtt_port)
+  File "/home/charlen/.local/lib/python3.10/site-packages/paho/mqtt/client.py", line 914, in connect
+    return self.reconnect()
+  File "/home/charlen/.local/lib/python3.10/site-packages/paho/mqtt/client.py", line 1044, in reconnect
+    sock = self._create_socket_connection()
+  File "/home/charlen/.local/lib/python3.10/site-packages/paho/mqtt/client.py", line 3685, in _create_socket_connection
+    return socket.create_connection(addr, timeout=self._connect_timeout, source_address=source)
+  File "/usr/lib/python3.10/socket.py", line 845, in create_connection
+    raise err
+  File "/usr/lib/python3.10/socket.py", line 833, in create_connection
+    sock.connect(sa)
+ConnectionRefusedError: [Errno 111] Connection refused

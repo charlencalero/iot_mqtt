@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Control de LEDs</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-4">Control de LEDs</h1>
+       
+        <div class="my-4">
+            <p id="message1"></p>
+            <a class="btn btn-primary" href="/encender1">Encender LED 1</a>
+            <a class="btn btn-danger" href="/apagar1">Apagar LED 1</a>
+            <img src="/static/encendido.png" alt="Estado LED 1" id="led1-img">
+        </div>
+        <div class="my-4">
+            <p id="message2"></p>
+            <a class="btn btn-primary" href="/encender2">Encender LED 2</a>
+            <a class="btn btn-danger" href="/apagar2">Apagar LED 2</a>
+            <img src="/static/encendido.png" alt="Estado LED 2" id="led2-img">
+        </div>
+    </div>
+
+    <script>
+
+    led2State="OS";
+    led1State="OS";
+
+     function getMessage1() {
+        $.get("/led1", function(data, status){
+            $('#message1').html(data) ;
+             led1State=(data.toString());
+             console.log(data.toString());
+
+             if ( led1State == "ON") {
+        
+        $("#led1-img").attr("src","/static/encendido.png");
+        console.log("imag 1 ON");
+
+    } else 
+    {
+
+       $("#led1-img").attr("src","/static/apagado.png");
+        console.log("imag 1 OFF");
+    }
+
+    });
+    }
+
+    function getMessage2() {
+        $.get("/led2", function(data2, status2){
+            $('#message2').html(data2) ;
+             led2State=(data2.toString());
+             console.log(data2.toString());
+
+             if (led2State=="ON")  {
+            $("#led2-img").attr("src","/static/encendido.png");
+            console.log("imag 2 ON");
+        } else 
+        {
+           $("#led2-img").attr("src","/static/apagado.png");
+            console.log("imag 2 OFF");
+        }
+    });
+    }
+
+    console.log("precargando... ");
+
+    //console("refrescando");
+    setInterval(getMessage1, 2000); 
+    setInterval(getMessage2, 2000); 
+
+        // Actualizar la imagen del LED 1 según su estado
+      //  var led1Img = document.getElementById("led1-img");
+ 
+
+
+       
+
+        
+        // Actualizar la imagen del LED 2 según su estado
+       
+    
+
+ 
+
+    
+    </script>
+   
+</body>
+</html>

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Control de LEDs</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+</head>
+<body>
+    <div class="container">
+
+        <h1 class="mt-4">Clima</h1>
+        <p id="message3"></p>
+        <p id="message4"></p>
+        <h1 class="mt-4">Control de LEDs</h1>
+       
+        <div class="my-4">
+            <p id="message1"></p>
+            <a class="btn btn-primary" href="#" onclick="toggleLED(1, 'ON')">Encender LED 1</a>
+            <a class="btn btn-danger" href="#" onclick="toggleLED(1, 'OFF')">Apagar LED 1</a>
+            <img src="/static/encendido.png" height="200px" alt="Estado LED 1" id="led1-img">
+        </div>
+        <div class="my-4">
+            <p id="message2"></p>
+            <a class="btn btn-primary" href="#" onclick="toggleLED(2, 'ON')">Encender LED 2</a>
+            <a class="btn btn-danger" href="#" onclick="toggleLED(2, 'OFF')">Apagar LED 2</a>
+            <img src="/static/encendido.png" height="200px" alt="Estado LED 2" id="led2-img">
+        </div>
+    </div>
+
+    <script>
+    var led2State = "OS";
+    var led1State = "OS";
+
+    function toggleLED(led, state) {
+
+        if(state=="ON")
+        {
+              $.ajax({
+            url: "/encender" + led,
+            type: "GET",
+            success: function(response) {
+                console.log(response);
+                updateLEDState(led, response);
+            },
+            error: function(error) {
+                console.log(error);
+            } });
+        }
+
+        if(state=="OFF")
+        {
+              $.ajax({
+            url: "/apagar" + led,
+            type: "GET",
+            success: function(response) {
+                console.log(response);
+                updateLEDState(led, response);
+            },
+            error: function(error) {
+                console.log(error);
+            } });
+        }
+
+       
+    }
+
+    function updateLEDState(led, state) {
+        var ledImg = $("#led" + led + "-img");
+        if (state === "ON") {
+            ledImg.attr("src", "/static/encendido.png");
+            console.log("imagen " + led + " ON");
+        } else {
+            ledImg.attr("src", "/static/apagado.png");
+            console.log("imagen " + led + " OFF");
+        }
+    }
+
+    function getLEDState(led) {
+        $.get("/led" + led, function(data, status) {
+            $('#message' + led).html(data);
+            var ledState = data.toString();
+            console.log(data.toString());
+            updateLEDState(led, ledState);
+        });
+    }
+
+    function gettemp() {
+        $.get("/temperatura" , function(data, status) {
+            $('#message3').html(data);
+            
+            console.log(data.toString());
+          
+        });
+    }
+
+    function gethume() {
+        $.get("/humedad" , function(data, status) {
+            $('#message4').html(data);
+            
+            console.log(data.toString());
+          
+        });
+    }
+    console.log("precargando...");
+
+    setInterval(function() {
+        getLEDState(1);
+        getLEDState(2);
+        gettemp()
+        gethume();
+    }, 1000);
+
+    </script>
+   
+</body>
+</html>
+

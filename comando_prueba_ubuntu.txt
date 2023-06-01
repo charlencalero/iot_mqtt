@@ -1,0 +1,9 @@
+mosquitto_sub -v -t "NombreMensaje"
+
+LEE EL NOMBRE DEL MENSAJE
+
+
+
+ENVIA UN MENSAJE:
+mosquitto_pub -t "NombreMensaje" -m "DescripcionMensaje"
+

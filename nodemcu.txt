@@ -1,0 +1,79 @@
+#include <ESP8266WiFi.h>
+#include <PubSubClient.h>
+
+// Configuración de la conexión WiFi
+const char* ssid = "nombre_de_red"; // Nombre de tu red WiFi
+const char* password = "contraseña_de_red"; // Contraseña de tu red WiFi
+
+// Configuración del broker MQTT
+const char* mqtt_server = "ip_del_broker"; // Dirección IP del broker MQTT
+const int mqtt_port = 1883; // Puerto del broker MQTT
+
+// Pines de los LEDs
+const int ledPin1 = D2; // Pin D2 del NodeMCU
+const int ledPin2 = D3; // Pin D3 del NodeMCU
+
+// Función de callback para recibir mensajes MQTT
+void callback(char* topic, byte* payload, unsigned int length) {
+  String message = "";
+  for (int i = 0; i < length; i++) {
+    message += (char)payload[i];
+  }
+
+  if (String(topic) == "led/control1") {
+    if (message == "ON") {
+      digitalWrite(ledPin1, HIGH); // Encender el LED 1
+    } else if (message == "OFF") {
+      digitalWrite(ledPin1, LOW); // Apagar el LED 1
+    }
+  } else if (String(topic) == "led/control2") {
+    if (message == "ON") {
+      digitalWrite(ledPin2, HIGH); // Encender el LED 2
+    } else if (message == "OFF") {
+      digitalWrite(ledPin2, LOW); // Apagar el LED 2
+    }
+  }
+}
+
+WiFiClient espClient;
+PubSubClient client(espClient);
+
+void setup() {
+  pinMode(ledPin1, OUTPUT);
+  pinMode(ledPin2, OUTPUT);
+  digitalWrite(ledPin1, LOW); // Apagar el LED 1 inicialmente
+  digitalWrite(ledPin2, LOW); // Apagar el LED 2 inicialmente
+
+  // Conexión a la red WiFi
+  WiFi.begin(ssid, password);
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+  }
+  
+  // Conexión al broker MQTT
+  client.setServer(mqtt_server, mqtt_port);
+  client.setCallback(callback);
+  
+  while (!client.connected()) {
+    if (client.connect("NodeMCUClient")) {
+      client.subscribe("led/control1"); // Suscribirse al topic "led/control1" para el LED 1
+      client.subscribe("led/control2"); // Suscribirse al topic "led/control2" para el LED 2
+    }
+    delay(1000);
+  }
+}
+
+void loop() {
+  if (!client.connected()) {
+    // Reconexión al broker MQTT si se pierde la conexión
+    while (!client.connected()) {
+      if (client.connect("NodeMCUClient")) {
+        client.subscribe("led/control1"); // Suscribirse al topic "led/control1" para el LED 1
+        client.subscribe("led/control2"); // Suscribirse al topic "led/control2" para el LED 2
+      }
+      delay(1000);
+    }
+  }
+  
+  client.loop();
+}
